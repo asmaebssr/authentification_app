@@ -127,6 +127,12 @@ const login = async (req, res) => {
             });
         };
 
+        // Check if the user's email is verified
+        if (!user.isVerified) {
+            return res.status(400).json({ 
+                message: 'Please verify your email before logging in.' 
+            });
+        }
         const isPasswordValid = await bcryptjs.compare(password, user.password);
 
         if (!isPasswordValid) {
@@ -196,6 +202,8 @@ const forgotPassword = async (req, res) => {
             user.email, 
             `${process.env.CLIENT_URL}/reset-password/${resetToken}`
         );
+        
+        console.log(`${process.env.CLIENT_URL}/reset-password/${resetToken}`)
 
         res.status(200).json({
             success: true,
@@ -260,6 +268,7 @@ const checkAuth = async (req, res) => {
     try {
 
         const user = await User.findById(req.userID).select('-password');
+        
         if (!user) {
             return res.status(404).json({
                 success: false,

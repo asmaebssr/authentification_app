@@ -3,10 +3,14 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const connectDB  = require('./config/db');
 const router = require('./routes/authRoutes');
+const cors = require('cors');
 
 dotenv.config();
 
 const app = express();
+
+app.use(cors({ origin: 'http://localhost:5173' }));
+
 const port = process.env.PORT || 5000;
 
 app.use(express.json()) // allows us to parse incomming requests : req.body
